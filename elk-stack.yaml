@@ -1,0 +1,7 @@
+---
+- name: Install and configure Elasticsearch
+  hosts: box2
+  become: true
+  roles:
+    - elasticsearch
+    - kibana

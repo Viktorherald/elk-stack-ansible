@@ -1,0 +1,31 @@
+---
+- name: Update apt packages
+  apt:
+    update_cache: yes
+- name: Install Kibana
+  apt:
+    name: kibana
+    state: present
+- name: Add elasticsearch enrollment token for kibana
+  shell: |
+    /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
+  register: out
+- name: Edit Config file
+  shell: |
+    sed -i 's|#server.host: "localhost"|server.host: 0.0.0.0|' /etc/kibana/kibana.yml
+
+- name: Restart daemon
+  systemd_service:
+    daemon_reload: true
+
+- name: Enable kibana.service
+  systemd_service:
+    name: kibana.service
+    enabled: true
+
+- name: Start service kibana, if not started
+  service:
+    name: kibana.service
+    state: started
+
+- debug: var=out.stdout_lines

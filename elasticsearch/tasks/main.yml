@@ -1,0 +1,53 @@
+---
+- name: Download Elasticsearch GPG key, and import to keyring
+  shell: |
+    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
+- name: Update and upgrade apt packages
+  apt:
+    update_cache: yes
+- name: Install dependency packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ dep_package }}"
+- name: Save repository definition
+  shell:
+    cmd: 'echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list'
+  args:
+    executable: /bin/bash
+- name: Update apt packages
+  apt:
+    update_cache: yes
+- name: Install Elasticsearch
+  apt:
+    name: elasticsearch
+    state: present
+  register: out
+- name: change Elasticsearch file permissions
+  file:
+    path: "{{ item }}"
+    mode: "0755"
+  loop: "{{ file_path_one }}"
+- name: change Elasticsearch file permissions
+  file:
+    path: "{{ item }}"
+    mode: "0444"
+  loop: "{{ file_path_two }}"
+- name: Edit Config file
+  shell: |
+    sed -i 's|network.host: 192.168.0.1|network.host: 0.0.0.0|' /etc/elasticsearch/elasticsearch.yml
+- name: Restart daemon
+  systemd_service:
+    daemon_reload: true
+
+- name: Enable elasticsearch.service
+  systemd_service:
+    name: elasticsearch.service
+    enabled: true
+
+- name: Start service elasticsearch, if not started
+  service:
+    name: elasticsearch.service
+    state: started
+
+- debug: var=out.stdout_lines

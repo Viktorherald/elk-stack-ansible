@@ -1,0 +1,11 @@
+---
+# vars file for elasticsearch
+dep_package:
+- apt-transport-https
+
+file_path_one:
+- /etc/elasticsearch/ 
+- /etc/elasticsearch/certs
+
+file_path_two:
+- /etc/elasticsearch/certs/http_ca.crt

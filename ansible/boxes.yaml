@@ -1,0 +1,12 @@
+---
+- name: Boxes setup
+  hosts: boxes
+  become: yes
+  vars:
+    package: ytree
+  tasks:
+    - name: Install ytree package
+      ansible.builtin.apt:
+        name: "{{package}}"
+        state: present
+

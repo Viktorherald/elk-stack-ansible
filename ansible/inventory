@@ -1,0 +1,14 @@
+all:
+  hosts:
+    box1:
+      ansible_host: 192.168.56.14
+    box2:
+      ansible_host: 192.168.56.15
+  children:
+    boxes:
+      hosts:
+        box1:
+        box2:
+  vars:
+    ansible_user: vagrant
+    ansible_password: vagrant
