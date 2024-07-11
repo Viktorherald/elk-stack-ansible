@@ -11,4 +11,4 @@
 
 1. On the Ansible output, copy the elastic user password.
 2. SSH into the box, and `export ELASTIC_PASSWORD="<the password>"`
-3. Run `curl --cacert /etc/elasticsearch/certs/http_ca.crt -u elastic:$ELASTIC_PASSWORD https://localhost:9200`to ensure a proper JSON response is obtained.
+3. Run `curl --cacert /etc/elasticsearch/certs/http_ca.crt -u elastic:$ELASTIC_PASSWORD https://localhost:9200` to ensure a proper JSON response is obtained.
